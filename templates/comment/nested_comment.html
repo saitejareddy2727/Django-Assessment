@@ -1,0 +1,20 @@
+<!-- post_detail.html -->
+{% for comment in comments %}
+    <div class="comment">
+        <p><strong>{{ comment.author }}:</strong> {{ comment.text }}</p>
+        <small>{{ comment.created_at }}</small>
+        <!-- Render replies recursively -->
+        {% if comment.replies.all %}
+            <div class="replies">
+                {% include 'comment_replies.html' with comments=comment.replies.all %}
+            </div>
+        {% endif %}
+        <!-- Form to reply to this comment -->
+        <form method="post" action="{% url 'post_detail' post.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="parent" value="{{ comment.id }}">
+            <button type="submit">Reply</button>
+        </form>
+    </div>
+{% endfor %}
